@@ -13,6 +13,10 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(cors());
 
+//mount router at all routes starting at '/api'
+app.use('/api',apiRouter);
+
+app.use(errorhandler());
 //create PORT 
 const PORT = process.env.PORT || 4000;
 
