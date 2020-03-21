@@ -5,6 +5,9 @@ const express = require('express');
 var morgan = require('morgan');
 var errorhandler = require('errorhandler');
 
+//import router 
+const apiRouter = require('./api/api');
+
 //create instance of express app
 const app = express();
 
