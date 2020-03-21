@@ -8,6 +8,11 @@ var errorhandler = require('errorhandler');
 //create instance of express app
 const app = express();
 
+//use middleware functions
+app.use(morgan('tiny'));
+app.use(bodyParser.json());
+app.use(cors());
+
 //create PORT 
 const PORT = process.env.PORT || 4000;
 
