@@ -9,6 +9,25 @@ const sqlite3 = require('sqlite3');
 //it will be used for testing
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
 
+//router params
+employeesRouter.param('employeeId',(req, res, next, id)=>{
+    db.get('SELECT * FROM Artist WHERE id=$id',
+    {
+        $id:id
+    },(error, employee)=>{
+        if(error){
+            next(error)
+        }else if(employee){
+            //attach to request object as employee
+            req.employee = employee;
+            //move on to next function 
+            next();
+        } else{
+            res.sendStatus(404);
+        }
+    })
+})
+
 //add get handler
 employeesRouter.get('/', (req, res, next)=>{
     db.all('SELECT * FROM Employee WHERE Employee.is_current_employee=1', (err,rows)=>{
