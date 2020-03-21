@@ -22,7 +22,43 @@ employeesRouter.get('/', (req, res, next)=>{
     })
 })
 
+//post handler
+employeesRouter.post('/', (req, res, next)=>{
 
+    //select fields from req.body
+    const name = req.body.name;
+    const position = req.body.position;
+    const wage = req.body.wage;
+
+    //check if is current_employee is set to 1 if not do it!
+    //Use ternary operator
+    const isCurrentEmployee = req.body.isCurrentEmployee === 0 ? 0 : 1;
+
+    if(!name || !position || !wage){
+        res.sendStatus(400);
+    }
+
+    const sql = 'INSERT INTO Employee (name, position, wage, is_current_employee) VALUES($name, $position, $wage, $isCurrentEmployee)';
+    const values = {
+        $name: name,
+        $position: position,
+        $wage: wage,
+        $isCurrentEmployee: isCurrentEmployee
+    };
+    //insert data into employee table
+    db.run(sql, values, function(error){
+        //pass potential error to errorhandler
+        if(error){
+            next(error);
+        } else{
+            //Select newly created row with this,lastID
+            db.get(`SELECT * FROM Employee WHERE Employee.id = ${this.lastID}`, (error,row)=>{
+                //send it in the response body with 201 status code
+                res.status(201).json({employee:row});
+            })
+        }
+    })
+})
 
 //export employeeRouter
 module.exports = employeesRouter;
