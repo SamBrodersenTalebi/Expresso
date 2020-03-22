@@ -119,6 +119,21 @@ employeesRouter.put('/:employeeId', (req,res,next)=>{
             })
         }
     })
+});
+
+//delete handler /api/employees/:employeeId
+employeesRouter.delete('/:employeeId', (req, res, next)=>{
+    const sql = 'UPDATE Employee SET is_current_employee = 0 WHERE Employee.id = $EmployeeId';
+    const values = {$EmployeeId: req.params.employeeId};
+    db.run(sql, values, function(error){
+        if(error){
+            next(error);
+        }else{
+            db.get(`SELECT * FROM Employee WHERE Employee.id = ${req.params.employeeId}`, (error,row)=>{
+                res.status(200).json({employee:row});
+            })
+        }
+    })
 })
 
 //export employeeRouter
