@@ -20,4 +20,23 @@ menuRouter.get('/', (req,res,next)=>{
     })
 });
 
+menuRouter.post('/', (req, res, next)=>{
+    const title = req.body.menu.title;
+    if(!title){
+        return res.sendStatus(400);
+    }
+    const sql = 'INSERT INTO Menu (title) VALUES($title)';
+    const values = {$title:title};
+    
+    db.run(sql, values, function(error){
+        if(error){
+            next(error);
+        } else{
+            db.get(`SELECT * FROM Menu WHERE Menu.id = ${this.lastID}`, (error,row)=>{
+                res.status(201).json({menu:row});
+            })
+        }
+    })
+});
+
 module.exports = menuRouter;
