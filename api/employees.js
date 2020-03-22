@@ -10,10 +10,10 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
 
 //router params
-employeesRouter.param('employeeId',(req, res, next, id)=>{
-    db.get('SELECT * FROM Artist WHERE id=$id',
+employeesRouter.param('employeeId',(req, res, next, employeeId)=>{
+    db.get('SELECT * FROM Employee WHERE Employee.id=$employeeId',
     {
-        $id:id
+        $employeeId:employeeId
     },(error, employee)=>{
         if(error){
             next(error)
@@ -77,6 +77,13 @@ employeesRouter.post('/', (req, res, next)=>{
             })
         }
     })
+})
+
+//get handler /api/employees/:employeeId
+employeesRouter.get('/:employeeId', (req,res,next)=>{
+    console.log(req.employee)
+    //the router param handles error handling and receives the employee at req.employee
+    res.status(200).json({employee:req.employee})
 })
 
 //export employeeRouter
