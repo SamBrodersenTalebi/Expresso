@@ -138,7 +138,7 @@ employeesRouter.delete('/:employeeId', (req, res, next)=>{
             })
         }
     })
-})
+});
 
 //export employeeRouter
 module.exports = employeesRouter;

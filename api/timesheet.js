@@ -9,6 +9,18 @@ const timesheetRouter = express.Router({mergeParams: true});
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
 
+timesheetRouter.get('/', (req, res, next)=>{
+    const sql = 'SELECT * FROM Timesheet WHERE Timesheet.employee_id = $employeeId';
+    //have access to employeeId as we merged params
+    const values = {$employeeId: req.params.employeeId};
+    db.all(sql, values, (error, rows)=>{
+        if(error){
+            next(error);
+        }else{
+            res.sendStatus(200).json({timesheets:rows});
+        }
+    })
+})
 
 
 
