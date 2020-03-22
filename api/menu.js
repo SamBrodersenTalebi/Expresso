@@ -9,6 +9,15 @@ const sqlite3 = require('sqlite3');
 //it will be used for testing
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
 
-
+menuRouter.get('/', (req,res,next)=>{
+    const sql = 'SELECT * FROM Menu';
+    db.all(sql, (error,rows)=>{
+        if(error){
+            next(error);
+        } else{
+            res.status(200).json({menus: rows})
+        }
+    })
+});
 
 module.exports = menuRouter;
