@@ -49,9 +49,9 @@ employeesRouter.get('/', (req, res, next)=>{
 employeesRouter.post('/', (req, res, next)=>{
 
     //select fields from req.body
-    const name = req.body.name;
-    const position = req.body.position;
-    const wage = req.body.wage;
+    const name = req.body.employee.name;
+    const position = req.body.employee.position;
+    const wage = req.body.employee.wage;
 
     //check if is current_employee is set to 1 if not do it!
     //Use ternary operator
@@ -93,9 +93,9 @@ employeesRouter.get('/:employeeId', (req,res,next)=>{
 //put handler /api/employees/:employeeId
 employeesRouter.put('/:employeeId', (req,res,next)=>{
     //select fields from req.body
-    const name = req.body.name;
-    const position = req.body.position;
-    const wage = req.body.wage;
+    const name = req.body.employee.name;
+    const position = req.body.employee.position;
+    const wage = req.body.employee.wage;
         
     //check if is current_employee is set to 1 if not do it!
     //Use ternary operator
