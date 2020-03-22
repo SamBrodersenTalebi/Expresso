@@ -17,10 +17,44 @@ timesheetRouter.get('/', (req, res, next)=>{
         if(error){
             next(error);
         }else{
-            res.sendStatus(200).json({timesheets:rows});
+            res.status(200).json({timesheets: rows});
         }
     })
 })
+
+
+//post handler /
+timesheetRouter.post('/', (req, res, next)=>{
+    const hours = req.body.timesheet.hours;
+    const rate = req.body.timesheet.rate;
+    const date = req.body.timesheet.date;
+    const employeeId = req.params.employeeId;
+
+    if(!hours || !rate || !date){
+        return res.sendStatus(400);
+    }
+    const sql = 'INSERT INTO Timesheet (hours, rate, date, employee_id)' +
+    'VALUES ($hours, $rate, $date, $employeeId)';
+    const values = {
+        $hours: hours,
+        $rate: rate,
+        $date: date,
+        $employeeId: employeeId
+    };
+    db.run(sql, values, function(error){
+        if(error){
+            next(error);
+        }else{
+            //Select newly created row with this,lastID
+            db.get(`SELECT * FROM Timesheet WHERE Timesheet.id = ${this.lastID}`, (error,row)=>{
+                //send it in the response body with 201 status code
+                res.status(201).json({timesheet:row});
+            })
+        }
+    })
+});
+
+
 
 
 
