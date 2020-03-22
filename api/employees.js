@@ -86,5 +86,40 @@ employeesRouter.get('/:employeeId', (req,res,next)=>{
     res.status(200).json({employee:req.employee})
 })
 
+//put handler /api/employees/:employeeId
+employeesRouter.put('/:employeeId', (req,res,next)=>{
+    //select fields from req.body
+    const name = req.body.name;
+    const position = req.body.position;
+    const wage = req.body.wage;
+        
+    //check if is current_employee is set to 1 if not do it!
+    //Use ternary operator
+    const isCurrentEmployee = req.body.isCurrentEmployee === 0 ? 0 : 1;
+    if(!name || !position || !wage){
+        res.sendStatus(400);
+    }
+    const sql = 'UPDATE Employee SET name = $name, position = $position, wage = $wage, is_current_employee = $isCurrentEmployee WHERE Employee.id = $EmployeeId';
+    const values = {
+        $name: name,
+        $position: position,
+        $wage: wage,
+        $isCurrentEmployee: isCurrentEmployee,
+        $EmployeeId: req.params.employeeId
+    };
+    console.log(req.params.employeeId);
+
+    db.run(sql, values, function(error){
+        if(error){
+            next(error)
+        }else{
+            db.get(`SELECT * FROM Employee WHERE Employee.id = ${req.params.employeeId}`, (error,row)=>{
+                console.log(row);
+                res.status(200).json({employee:row});
+            })
+        }
+    })
+})
+
 //export employeeRouter
 module.exports = employeesRouter;
