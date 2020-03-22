@@ -7,7 +7,26 @@ const sqlite3 = require('sqlite3');
 
 //check if process.env.TEST_DATABASE has been set, and if so load that database instead
 //it will be used for testing
-const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
+const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
+
+//router params
+menuRouter.param('menuId',(req, res, next, menuId)=>{
+    db.get('SELECT * FROM Menu WHERE Menu.id=$menuId',
+    {
+        $menuId:menuId
+    },(error, menu)=>{
+        if(error){
+            next(error)
+        }else if(menu){
+            //attach to request object as employee
+            req.menu = menu;
+            //move on to next function 
+            next();
+        } else{
+            res.sendStatus(404);
+        }
+    })
+})
 
 menuRouter.get('/', (req,res,next)=>{
     const sql = 'SELECT * FROM Menu';
@@ -38,5 +57,9 @@ menuRouter.post('/', (req, res, next)=>{
         }
     })
 });
+
+menuRouter.get('/:menuId', (req, res, next)=>{
+    res.status(200).json({menu:req.menu});
+})
 
 module.exports = menuRouter;
