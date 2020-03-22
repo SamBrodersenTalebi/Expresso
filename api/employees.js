@@ -1,6 +1,7 @@
 //import express and create instance of express router
 const express = require('express');
 const employeesRouter = express.Router();
+const timesheetRouter = require('./timesheet.js')
 
 //import sqlite3
 const sqlite3 = require('sqlite3');
@@ -8,6 +9,9 @@ const sqlite3 = require('sqlite3');
 //check if process.env.TEST_DATABASE has been set, and if so load that database instead
 //it will be used for testing
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
+
+//Mount timesheetRouter at /:employeeId/timesheets
+employeesRouter.use('/:employeeId/timesheets', timesheetRouter);
 
 //router params
 employeesRouter.param('employeeId',(req, res, next, employeeId)=>{
