@@ -18,7 +18,7 @@ timesheetRouter.param('timesheetId',(req, res, next, timesheetId)=>{
         if(error){
             next(error)
         }else if(timesheet){
-            //attach to request object as employee
+            //attach to request object as timesheet
             req.timesheet = timesheet;
             //move on to next function 
             next();

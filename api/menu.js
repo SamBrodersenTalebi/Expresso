@@ -90,15 +90,31 @@ menuRouter.put('/:menuId', (req, res, next)=>{
 });
 
 menuRouter.delete('/:menuId', (req, res, next)=>{
-    const sql = 'DELETE FROM Menu WHERE Menu.id = $menuId';
-    const values = {$menuId: req.params.menuId};
-    db.run(sql, values, function(error){
-        if (error){
+    const menuItemSql = 'SELECT * FROM MenuItem WHERE MenuItem.menu_id = $menuId';
+    const menuItemValue = {$menuId: req.params.menuId};
+
+    db.get(menuItemSql, menuItemValue, (error, row)=>{
+        if(error){
             next(error);
+        } else if(row){
+            /*
+            If the menu with the supplied menu ID has related menu items, 
+            returns a 400 response.
+            */
+           return res.sendStatus(400); 
         } else{
-            res.sendStatus(204);
+            const sql = 'DELETE FROM Menu WHERE Menu.id = $menuId';
+            const value = {$menuId: req.params.menuId};
+            db.run(sql, value, function(error){
+                if (error){
+                    next(error);
+                } else{
+                    res.sendStatus(204);
+                }
+            })
         }
     })
+
 })
 
 module.exports = menuRouter;
