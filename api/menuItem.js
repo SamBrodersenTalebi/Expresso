@@ -19,7 +19,7 @@ menuItemRouter.param('menuItemId',(req, res, next, menuItemId)=>{
         if(error){
             next(error)
         }else if(menuItem){
-            //attach to request object as employee
+            //attach to request object as menuItem
             req.menuItemId = menuItemId;
             //move on to next function 
             next();
@@ -102,6 +102,19 @@ menuItemRouter.put('/:menuItemId', (req, res, next)=>{
             db.get(`SELECT * FROM MenuItem WHERE MenuItem.id = ${this.lastID}`, (error, row)=>{
                 res.status(200).json({menuItem: row});
             })
+        }
+    })
+})
+
+menuItemRouter.delete('/:menuItemId', (req, res, next)=>{
+    const sql = 'DELETE FROM MenuItem WHERE MenuItem.id = $menuItemId';
+    const value = {$menuItemId: req.params.menuItemId}
+
+    db.run(sql,value, function(error){
+        if(error){
+            next(error);
+        } else{
+            res.sendStatus(204);
         }
     })
 })
