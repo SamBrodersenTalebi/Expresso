@@ -21,5 +21,35 @@ menuItemRouter.get('/', (req,res,next)=>{
     })
 });
 
+menuItemRouter.post('/', (req,res,next)=>{
+    const name = req.body.menuItem.name;
+    const description = req.body.menuItem.description;
+    const inventory = req.body.menuItem.inventory;
+    const price = req.body.menuItem.price;
+    const menuId = req.params.menuId;
 
+    if(!name || !description || !inventory || !price){
+        return res.sendStatus(400);
+    }
+
+    const sql = 'INSERT INTO MenuItem (name, description, inventory, price, menu_id) VALUES ($name, $description, $inventory, $price, $menuId)';
+
+    const values = {
+        $name: name,
+        $description: description,
+        $inventory: inventory,
+        $price: price,
+        $menuId: menuId
+    };
+
+    db.run(sql, values, function(error){
+        if(error){
+            next(error);
+        } else{
+            db.get(`SELECT * FROM MenuItem WHERE MenuItem.id = ${this.lastID}`, (error,row)=>{
+                res.status(201).json({menuItem:row});
+            })
+        }
+    })
+})
 module.exports = menuItemRouter;
