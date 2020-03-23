@@ -99,9 +99,10 @@ menuItemRouter.put('/:menuItemId', (req, res, next)=>{
         if (error){
             next(error);
         } else{
-            db.get(`SELECT * FROM MenuItem WHERE MenuItem.id = ${this.lastID}`, (error, row)=>{
-                res.status(200).json({menuItem: row});
-            })
+            db.get(`SELECT * FROM MenuItem WHERE MenuItem.id = ${req.params.menuItemId}`,
+            (error, row) => {
+              res.status(200).json({menuItem: row});
+            });
         }
     })
 })
